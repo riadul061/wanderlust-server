@@ -276,31 +276,31 @@ async function run() {
       } catch (e) { res.status(500).json({ error: (e as Error).message }); }
     });
 
-//     // ===== ADMIN =====
-//     app.get('/api/admin/dashboard', verifyToken, verifyAdmin, async (_req, res) => {
-//       try {
-//         const [totalUsers, totalStories, premiumUsers, totalReports] = await Promise.all([
-//           userCollection.countDocuments(), storiesCollection.countDocuments(),
-//           userCollection.countDocuments({ isPremium: true }), reportsCollection.countDocuments({ status: 'pending' }),
-//         ]);
-//         res.json({ totalUsers, totalStories, premiumUsers, totalReports });
-//       } catch (e) { res.status(500).json({ error: (e as Error).message }); }
-//     });
+    // ===== ADMIN =====
+    app.get('/api/admin/dashboard', verifyToken, verifyAdmin, async (_req, res) => {
+      try {
+        const [totalUsers, totalStories, premiumUsers, totalReports] = await Promise.all([
+          userCollection.countDocuments(), storiesCollection.countDocuments(),
+          userCollection.countDocuments({ isPremium: true }), reportsCollection.countDocuments({ status: 'pending' }),
+        ]);
+        res.json({ totalUsers, totalStories, premiumUsers, totalReports });
+      } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+    });
 
-//     app.get('/api/admin/users', verifyToken, verifyAdmin, async (_req, res) => {
-//       try { const users = await userCollection.find({}).toArray(); res.json({ users }); }
-//       catch (e) { res.status(500).json({ error: (e as Error).message }); }
-//     });
+    app.get('/api/admin/users', verifyToken, verifyAdmin, async (_req, res) => {
+      try { const users = await userCollection.find({}).toArray(); res.json({ users }); }
+      catch (e) { res.status(500).json({ error: (e as Error).message }); }
+    });
 
-//     app.put('/api/admin/users/:id/toggle-block', verifyToken, verifyAdmin, async (req, res) => {
-//       try {
-//         const id = toObjectId(req.params.id);
-//         if (!id) return res.status(400).json({ error: 'Invalid user id' });
-//         if (typeof req.body.isBlocked !== 'boolean') return res.status(400).json({ error: 'isBlocked must be boolean' });
-//         await userCollection.updateOne({ _id: id }, { $set: { isBlocked: req.body.isBlocked } });
-//         res.json({ success: true });
-//       } catch (e) { res.status(500).json({ error: (e as Error).message }); }
-//     });
+    app.put('/api/admin/users/:id/toggle-block', verifyToken, verifyAdmin, async (req, res) => {
+      try {
+        const id = toObjectId(req.params.id);
+        if (!id) return res.status(400).json({ error: 'Invalid user id' });
+        if (typeof req.body.isBlocked !== 'boolean') return res.status(400).json({ error: 'isBlocked must be boolean' });
+        await userCollection.updateOne({ _id: id }, { $set: { isBlocked: req.body.isBlocked } });
+        res.json({ success: true });
+      } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+    });
 
 //     app.get('/api/admin/stories', verifyToken, verifyAdmin, async (_req, res) => {
 //       try { const stories = await storiesCollection.find({}).sort({ createdAt: -1 }).toArray(); res.json({ stories }); }
