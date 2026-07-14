@@ -243,38 +243,38 @@ async function run() {
       } catch (e) { res.status(500).json({ error: (e as Error).message }); }
     });
 
-//     app.post('/api/webhooks/stripe', async (req, res) => {
-//       try {
-//         const sig = req.headers['stripe-signature'] as string;
-//         const event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET || '');
-//         if (event.type === 'checkout.session.completed') {
-//           const session = event.data.object as Stripe.Checkout.Session;
-//           const { userId } = session.metadata as Record<string, string>;
-//           if (userId && ObjectId.isValid(userId)) {
-//             await paymentsCollection.insertOne({
-//               userId,
-//               amount: session.amount_total ? session.amount_total / 100 : 0,
-//               transactionId: session.id,
-//               paymentStatus: 'completed',
-//               type: 'premium',
-//               paidAt: new Date(),
-//             });
-//             await userCollection.updateOne({ _id: new ObjectId(userId) }, { $set: { isPremium: true } });
-//           }
-//         }
-//         res.json({ received: true });
-//       } catch (e) { res.status(400).json({ error: (e as Error).message }); }
-//     });
+    app.post('/api/webhooks/stripe', async (req, res) => {
+      try {
+        const sig = req.headers['stripe-signature'] as string;
+        const event = stripe.webhooks.constructEvent(req.body, sig, process.env.STRIPE_WEBHOOK_SECRET || '');
+        if (event.type === 'checkout.session.completed') {
+          const session = event.data.object as Stripe.Checkout.Session;
+          const { userId } = session.metadata as Record<string, string>;
+          if (userId && ObjectId.isValid(userId)) {
+            await paymentsCollection.insertOne({
+              userId,
+              amount: session.amount_total ? session.amount_total / 100 : 0,
+              transactionId: session.id,
+              paymentStatus: 'completed',
+              type: 'premium',
+              paidAt: new Date(),
+            });
+            await userCollection.updateOne({ _id: new ObjectId(userId) }, { $set: { isPremium: true } });
+          }
+        }
+        res.json({ received: true });
+      } catch (e) { res.status(400).json({ error: (e as Error).message }); }
+    });
 
-//     app.get('/api/user/stats', verifyToken, async (req: AuthRequest, res) => {
-//       try {
-//         const totalStories = await storiesCollection.countDocuments({ travelerId: req.user?.sub });
-//         const totalBookmarks = await bookmarksCollection.countDocuments({ userId: req.user?.sub });
-//         const userStories = await storiesCollection.find({ travelerId: req.user?.sub }).toArray();
-//         const totalLikes = userStories.reduce((s, r) => s + (r.likesCount || 0), 0);
-//         res.json({ totalStories, totalBookmarks, totalLikes });
-//       } catch (e) { res.status(500).json({ error: (e as Error).message }); }
-//     });
+    app.get('/api/user/stats', verifyToken, async (req: AuthRequest, res) => {
+      try {
+        const totalStories = await storiesCollection.countDocuments({ travelerId: req.user?.sub });
+        const totalBookmarks = await bookmarksCollection.countDocuments({ userId: req.user?.sub });
+        const userStories = await storiesCollection.find({ travelerId: req.user?.sub }).toArray();
+        const totalLikes = userStories.reduce((s, r) => s + (r.likesCount || 0), 0);
+        res.json({ totalStories, totalBookmarks, totalLikes });
+      } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+    });
 
 //     // ===== ADMIN =====
 //     app.get('/api/admin/dashboard', verifyToken, verifyAdmin, async (_req, res) => {
