@@ -120,38 +120,38 @@ async function run() {
       } catch (e) { res.status(500).json({ error: (e as Error).message }); }
     });
 
-//     app.get('/api/stories/:id', async (req, res) => {
-//       try {
-//         const id = toObjectId(req.params.id);
-//         if (!id) return res.status(400).json({ error: 'Invalid story id' });
-//         const story = await storiesCollection.findOne({ _id: id });
-//         if (!story) return res.status(404).json({ error: 'Not found' });
-//         res.json({ story });
-//       } catch (e) { res.status(500).json({ error: (e as Error).message }); }
-//     });
+    app.get('/api/stories/:id', async (req, res) => {
+      try {
+        const id = toObjectId(req.params.id);
+        if (!id) return res.status(400).json({ error: 'Invalid story id' });
+        const story = await storiesCollection.findOne({ _id: id });
+        if (!story) return res.status(404).json({ error: 'Not found' });
+        res.json({ story });
+      } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+    });
 
-//     app.post('/api/stories', verifyToken, async (req: AuthRequest, res) => {
-//       try {
-//         if (!req.user?.isPremium) {
-//           const count = await storiesCollection.countDocuments({ travelerId: req.user?.sub });
-//           if (count >= 3) return res.status(403).json({ error: 'Free limit: 3 stories. Get Premium!' });
-//         }
-//         const { title, coverImage, images, country, city, continent, travelMonth, travelYear, duration, budget, description, highlights, tips } = req.body;
-//         if (!title || !coverImage || !country || !continent || !description) return res.status(400).json({ error: 'Missing required fields' });
-//         if (!req.user) return res.status(401).json({ msg: 'Unauthorized' });
-//         const doc: StoryDocument = {
-//           title, coverImage, images: images || [], country, city: city || '', continent,
-//           travelMonth: travelMonth || '', travelYear: travelYear || new Date().getFullYear(),
-//           duration: duration || '', budget: parseFloat(budget) || 0, description,
-//           highlights: highlights || [], tips: tips || [],
-//           travelerId: req.user.sub, travelerName: req.user.name, travelerEmail: req.user.email,
-//           likesCount: 0, likedBy: [], isFeatured: false, status: 'active',
-//           createdAt: new Date(), updatedAt: new Date(),
-//         };
-//         const result = await storiesCollection.insertOne(doc);
-//         res.status(201).json({ story: { ...doc, _id: result.insertedId } });
-//       } catch (e) { res.status(500).json({ error: (e as Error).message }); }
-//     });
+    app.post('/api/stories', verifyToken, async (req: AuthRequest, res) => {
+      try {
+        if (!req.user?.isPremium) {
+          const count = await storiesCollection.countDocuments({ travelerId: req.user?.sub });
+          if (count >= 3) return res.status(403).json({ error: 'Free limit: 3 stories. Get Premium!' });
+        }
+        const { title, coverImage, images, country, city, continent, travelMonth, travelYear, duration, budget, description, highlights, tips } = req.body;
+        if (!title || !coverImage || !country || !continent || !description) return res.status(400).json({ error: 'Missing required fields' });
+        if (!req.user) return res.status(401).json({ msg: 'Unauthorized' });
+        const doc: StoryDocument = {
+          title, coverImage, images: images || [], country, city: city || '', continent,
+          travelMonth: travelMonth || '', travelYear: travelYear || new Date().getFullYear(),
+          duration: duration || '', budget: parseFloat(budget) || 0, description,
+          highlights: highlights || [], tips: tips || [],
+          travelerId: req.user.sub, travelerName: req.user.name, travelerEmail: req.user.email,
+          likesCount: 0, likedBy: [], isFeatured: false, status: 'active',
+          createdAt: new Date(), updatedAt: new Date(),
+        };
+        const result = await storiesCollection.insertOne(doc);
+        res.status(201).json({ story: { ...doc, _id: result.insertedId } });
+      } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+    });
 
 //     app.post('/api/stories/:id/like', verifyToken, async (req: AuthRequest, res) => {
 //       try {
