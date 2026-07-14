@@ -213,35 +213,35 @@ async function run() {
       catch (e) { res.status(500).json({ error: (e as Error).message }); }
     });
 
-//     // ===== REPORTS =====
-//     app.post('/api/reports', verifyToken, async (req: AuthRequest, res) => {
-//       try {
-//         if (!req.body.storyId || !req.body.reason) return res.status(400).json({ error: 'Missing required fields' });
-//         const r = await reportsCollection.insertOne({
-//           storyId: req.body.storyId,
-//           reporterEmail: req.user?.email as string,
-//           reason: req.body.reason,
-//           status: 'pending',
-//           createdAt: new Date(),
-//         });
-//         res.status(201).json({ report: { _id: r.insertedId } });
-//       } catch (e) { res.status(500).json({ error: (e as Error).message }); }
-//     });
+    // ===== REPORTS =====
+    app.post('/api/reports', verifyToken, async (req: AuthRequest, res) => {
+      try {
+        if (!req.body.storyId || !req.body.reason) return res.status(400).json({ error: 'Missing required fields' });
+        const r = await reportsCollection.insertOne({
+          storyId: req.body.storyId,
+          reporterEmail: req.user?.email as string,
+          reason: req.body.reason,
+          status: 'pending',
+          createdAt: new Date(),
+        });
+        res.status(201).json({ report: { _id: r.insertedId } });
+      } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+    });
 
-//     // ===== STRIPE =====
-//     app.post('/api/create-checkout-session', verifyToken, async (req: AuthRequest, res) => {
-//       try {
-//         const { type = 'premium' } = req.body;
-//         const lineItems = [{ price_data: { currency: 'usd', product_data: { name: 'WanderLust Premium Traveler' }, unit_amount: 1299 }, quantity: 1 }];
-//         const metadata: Record<string, string> = { userId: req.user?.sub || '', userEmail: req.user?.email || '', type };
-//         const session = await stripe.checkout.sessions.create({
-//           payment_method_types: ['card'], line_items: lineItems, mode: 'payment',
-//           success_url: `${process.env.CLIENT_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
-//           cancel_url: `${process.env.CLIENT_URL}/`, metadata,
-//         });
-//         res.json({ url: session.url });
-//       } catch (e) { res.status(500).json({ error: (e as Error).message }); }
-//     });
+    // ===== STRIPE =====
+    app.post('/api/create-checkout-session', verifyToken, async (req: AuthRequest, res) => {
+      try {
+        const { type = 'premium' } = req.body;
+        const lineItems = [{ price_data: { currency: 'usd', product_data: { name: 'WanderLust Premium Traveler' }, unit_amount: 1299 }, quantity: 1 }];
+        const metadata: Record<string, string> = { userId: req.user?.sub || '', userEmail: req.user?.email || '', type };
+        const session = await stripe.checkout.sessions.create({
+          payment_method_types: ['card'], line_items: lineItems, mode: 'payment',
+          success_url: `${process.env.CLIENT_URL}/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+          cancel_url: `${process.env.CLIENT_URL}/`, metadata,
+        });
+        res.json({ url: session.url });
+      } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+    });
 
 //     app.post('/api/webhooks/stripe', async (req, res) => {
 //       try {
