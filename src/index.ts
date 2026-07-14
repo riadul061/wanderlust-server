@@ -153,37 +153,37 @@ async function run() {
       } catch (e) { res.status(500).json({ error: (e as Error).message }); }
     });
 
-//     app.post('/api/stories/:id/like', verifyToken, async (req: AuthRequest, res) => {
-//       try {
-//         const id = toObjectId(req.params.id);
-//         if (!id) return res.status(400).json({ error: 'Invalid story id' });
-//         const story = await storiesCollection.findOne({ _id: id });
-//         if (!story) return res.status(404).json({ error: 'Not found' });
-//         const liked = story.likedBy?.includes(req.user?.sub || '');
-//         if (liked) { await storiesCollection.updateOne({ _id: id }, { $pull: { likedBy: req.user?.sub }, $inc: { likesCount: -1 } }); }
-//         else { await storiesCollection.updateOne({ _id: id }, { $addToSet: { likedBy: req.user?.sub }, $inc: { likesCount: 1 } }); }
-//         const updated = await storiesCollection.findOne({ _id: id });
-//         res.json({ likesCount: updated?.likesCount, liked: !liked });
-//       } catch (e) { res.status(500).json({ error: (e as Error).message }); }
-//     });
+    app.post('/api/stories/:id/like', verifyToken, async (req: AuthRequest, res) => {
+      try {
+        const id = toObjectId(req.params.id);
+        if (!id) return res.status(400).json({ error: 'Invalid story id' });
+        const story = await storiesCollection.findOne({ _id: id });
+        if (!story) return res.status(404).json({ error: 'Not found' });
+        const liked = story.likedBy?.includes(req.user?.sub || '');
+        if (liked) { await storiesCollection.updateOne({ _id: id }, { $pull: { likedBy: req.user?.sub }, $inc: { likesCount: -1 } }); }
+        else { await storiesCollection.updateOne({ _id: id }, { $addToSet: { likedBy: req.user?.sub }, $inc: { likesCount: 1 } }); }
+        const updated = await storiesCollection.findOne({ _id: id });
+        res.json({ likesCount: updated?.likesCount, liked: !liked });
+      } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+    });
 
-//     app.delete('/api/stories/:id', verifyToken, async (req: AuthRequest, res) => {
-//       try {
-//         const id = toObjectId(req.params.id);
-//         if (!id) return res.status(400).json({ error: 'Invalid story id' });
-//         const story = await storiesCollection.findOne({ _id: id });
-//         if (!story) return res.status(404).json({ error: 'Not found' });
-//         if (story.travelerId !== req.user?.sub && req.user?.role !== 'admin') {
-//           return res.status(403).json({ error: 'Not authorized to delete this story' });
-//         }
-//         await storiesCollection.deleteOne({ _id: id });
-//         res.json({ success: true });
-//       } catch (e) { res.status(500).json({ error: (e as Error).message }); }
-//     });
+    app.delete('/api/stories/:id', verifyToken, async (req: AuthRequest, res) => {
+      try {
+        const id = toObjectId(req.params.id);
+        if (!id) return res.status(400).json({ error: 'Invalid story id' });
+        const story = await storiesCollection.findOne({ _id: id });
+        if (!story) return res.status(404).json({ error: 'Not found' });
+        if (story.travelerId !== req.user?.sub && req.user?.role !== 'admin') {
+          return res.status(403).json({ error: 'Not authorized to delete this story' });
+        }
+        await storiesCollection.deleteOne({ _id: id });
+        res.json({ success: true });
+      } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+    });
 
-//     // ===== BOOKMARKS =====
-//     app.get('/api/bookmarks', verifyToken, async (req: AuthRequest, res) => {
-//       try {
+    // ===== BOOKMARKS =====
+    app.get('/api/bookmarks', verifyToken, async (req: AuthRequest, res) => {
+      try {
 //         const page = parseInt(req.query.page as string) || 1;
 //         const limit = clampLimit(req.query.limit, 10);
 //         const total = await bookmarksCollection.countDocuments({ userId: req.user?.sub });
