@@ -184,34 +184,34 @@ async function run() {
     // ===== BOOKMARKS =====
     app.get('/api/bookmarks', verifyToken, async (req: AuthRequest, res) => {
       try {
-//         const page = parseInt(req.query.page as string) || 1;
-//         const limit = clampLimit(req.query.limit, 10);
-//         const total = await bookmarksCollection.countDocuments({ userId: req.user?.sub });
-//         const data = await bookmarksCollection.find({ userId: req.user?.sub }).sort({ addedAt: -1 }).skip((page - 1) * limit).limit(limit).toArray();
-//         const populated = await Promise.all(data.map(async (b) => {
-//           const storyObjectId = toObjectId(b.storyId);
-//           if (!storyObjectId) return { ...b, storyId: null };
-//           const s = await storiesCollection.findOne({ _id: storyObjectId });
-//           return { ...b, storyId: s };
-//         }));
-//         res.json({ bookmarks: populated, pagination: { page, limit, total, pages: Math.ceil(total / limit) } });
-//       } catch (e) { res.status(500).json({ error: (e as Error).message }); }
-//     });
+        const page = parseInt(req.query.page as string) || 1;
+        const limit = clampLimit(req.query.limit, 10);
+        const total = await bookmarksCollection.countDocuments({ userId: req.user?.sub });
+        const data = await bookmarksCollection.find({ userId: req.user?.sub }).sort({ addedAt: -1 }).skip((page - 1) * limit).limit(limit).toArray();
+        const populated = await Promise.all(data.map(async (b) => {
+          const storyObjectId = toObjectId(b.storyId);
+          if (!storyObjectId) return { ...b, storyId: null };
+          const s = await storiesCollection.findOne({ _id: storyObjectId });
+          return { ...b, storyId: s };
+        }));
+        res.json({ bookmarks: populated, pagination: { page, limit, total, pages: Math.ceil(total / limit) } });
+      } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+    });
 
-//     app.post('/api/bookmarks', verifyToken, async (req: AuthRequest, res) => {
-//       try {
-//         if (!req.body.storyId || !ObjectId.isValid(req.body.storyId)) return res.status(400).json({ error: 'Invalid story id' });
-//         const existing = await bookmarksCollection.findOne({ userId: req.user?.sub, storyId: req.body.storyId });
-//         if (existing) return res.status(400).json({ error: 'Already bookmarked' });
-//         const r = await bookmarksCollection.insertOne({ userId: req.user?.sub as string, storyId: req.body.storyId, addedAt: new Date() });
-//         res.status(201).json({ bookmark: { _id: r.insertedId } });
-//       } catch (e) { res.status(500).json({ error: (e as Error).message }); }
-//     });
+    app.post('/api/bookmarks', verifyToken, async (req: AuthRequest, res) => {
+      try {
+        if (!req.body.storyId || !ObjectId.isValid(req.body.storyId)) return res.status(400).json({ error: 'Invalid story id' });
+        const existing = await bookmarksCollection.findOne({ userId: req.user?.sub, storyId: req.body.storyId });
+        if (existing) return res.status(400).json({ error: 'Already bookmarked' });
+        const r = await bookmarksCollection.insertOne({ userId: req.user?.sub as string, storyId: req.body.storyId, addedAt: new Date() });
+        res.status(201).json({ bookmark: { _id: r.insertedId } });
+      } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+    });
 
-//     app.delete('/api/bookmarks/:storyId', verifyToken, async (req: AuthRequest, res) => {
-//       try { await bookmarksCollection.deleteOne({ userId: req.user?.sub, storyId: req.params.storyId }); res.json({ success: true }); }
-//       catch (e) { res.status(500).json({ error: (e as Error).message }); }
-//     });
+    app.delete('/api/bookmarks/:storyId', verifyToken, async (req: AuthRequest, res) => {
+      try { await bookmarksCollection.deleteOne({ userId: req.user?.sub, storyId: req.params.storyId }); res.json({ success: true }); }
+      catch (e) { res.status(500).json({ error: (e as Error).message }); }
+    });
 
 //     // ===== REPORTS =====
 //     app.post('/api/reports', verifyToken, async (req: AuthRequest, res) => {
