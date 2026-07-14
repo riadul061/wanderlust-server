@@ -341,32 +341,32 @@ async function run() {
       } catch (e) { res.status(500).json({ error: (e as Error).message }); }
     });
 
-//     app.patch('/api/admin/reports/:id', verifyToken, verifyAdmin, async (req, res) => {
-//       try {
-//         const id = toObjectId(req.params.id);
-//         if (!id) return res.status(400).json({ error: 'Invalid report id' });
-//         if (req.body.action === 'dismiss') {
-//           await reportsCollection.updateOne({ _id: id }, { $set: { status: 'dismissed' } });
-//         } else if (req.body.action === 'remove_story') {
-//           const report = await reportsCollection.findOne({ _id: id });
-//           const storyObjectId = report ? toObjectId(report.storyId) : null;
-//           if (report && storyObjectId) {
-//             await storiesCollection.updateOne({ _id: storyObjectId }, { $set: { status: 'removed' } });
-//             await reportsCollection.updateOne({ _id: id }, { $set: { status: 'resolved' } });
-//           }
-//         } else {
-//           return res.status(400).json({ error: 'Unknown action' });
-//         }
-//         res.json({ success: true });
-//       } catch (e) { res.status(500).json({ error: (e as Error).message }); }
-//     });
+    app.patch('/api/admin/reports/:id', verifyToken, verifyAdmin, async (req, res) => {
+      try {
+        const id = toObjectId(req.params.id);
+        if (!id) return res.status(400).json({ error: 'Invalid report id' });
+        if (req.body.action === 'dismiss') {
+          await reportsCollection.updateOne({ _id: id }, { $set: { status: 'dismissed' } });
+        } else if (req.body.action === 'remove_story') {
+          const report = await reportsCollection.findOne({ _id: id });
+          const storyObjectId = report ? toObjectId(report.storyId) : null;
+          if (report && storyObjectId) {
+            await storiesCollection.updateOne({ _id: storyObjectId }, { $set: { status: 'removed' } });
+            await reportsCollection.updateOne({ _id: id }, { $set: { status: 'resolved' } });
+          }
+        } else {
+          return res.status(400).json({ error: 'Unknown action' });
+        }
+        res.json({ success: true });
+      } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+    });
 
-//     app.get('/', (_req, res) => res.send('WanderLust Server Running!'));
-//     await client.db('admin').command({ ping: 1 });
-//     console.log('✅ MongoDB connected!');
-//   } finally {
-//     // intentionally empty
-//   }
-// }
-// run().catch(console.dir);
-// app.listen(PORT, () => console.log(`🚀 WanderLust Server on ${PORT}`));
+    app.get('/', (_req, res) => res.send('WanderLust Server Running!'));
+    await client.db('admin').command({ ping: 1 });
+    console.log('✅ MongoDB connected!');
+  } finally {
+    // intentionally empty
+  }
+}
+run().catch(console.dir);
+app.listen(PORT, () => console.log(`🚀 WanderLust Server on ${PORT}`));
