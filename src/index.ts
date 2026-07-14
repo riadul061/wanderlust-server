@@ -302,44 +302,44 @@ async function run() {
       } catch (e) { res.status(500).json({ error: (e as Error).message }); }
     });
 
-//     app.get('/api/admin/stories', verifyToken, verifyAdmin, async (_req, res) => {
-//       try { const stories = await storiesCollection.find({}).sort({ createdAt: -1 }).toArray(); res.json({ stories }); }
-//       catch (e) { res.status(500).json({ error: (e as Error).message }); }
-//     });
+    app.get('/api/admin/stories', verifyToken, verifyAdmin, async (_req, res) => {
+      try { const stories = await storiesCollection.find({}).sort({ createdAt: -1 }).toArray(); res.json({ stories }); }
+      catch (e) { res.status(500).json({ error: (e as Error).message }); }
+    });
 
-//     app.patch('/api/admin/stories/:id/feature', verifyToken, verifyAdmin, async (req, res) => {
-//       try {
-//         const id = toObjectId(req.params.id);
-//         if (!id) return res.status(400).json({ error: 'Invalid story id' });
-//         if (typeof req.body.isFeatured !== 'boolean') return res.status(400).json({ error: 'isFeatured must be boolean' });
-//         await storiesCollection.updateOne({ _id: id }, { $set: { isFeatured: req.body.isFeatured } });
-//         res.json({ success: true });
-//       } catch (e) { res.status(500).json({ error: (e as Error).message }); }
-//     });
+    app.patch('/api/admin/stories/:id/feature', verifyToken, verifyAdmin, async (req, res) => {
+      try {
+        const id = toObjectId(req.params.id);
+        if (!id) return res.status(400).json({ error: 'Invalid story id' });
+        if (typeof req.body.isFeatured !== 'boolean') return res.status(400).json({ error: 'isFeatured must be boolean' });
+        await storiesCollection.updateOne({ _id: id }, { $set: { isFeatured: req.body.isFeatured } });
+        res.json({ success: true });
+      } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+    });
 
-//     app.delete('/api/admin/stories/:id', verifyToken, verifyAdmin, async (req, res) => {
-//   try {
-//     const id = toObjectId(req.params.id);
-//     if (!id) return res.status(400).json({ error: 'Invalid story id' });
-//     const story = await storiesCollection.findOne({ _id: id });
-//     if (!story) return res.status(404).json({ error: 'Not found' });
-//     await storiesCollection.deleteOne({ _id: id });
-//     res.json({ success: true });
-//   } catch (e) { res.status(500).json({ error: (e as Error).message }); }
-// });
+    app.delete('/api/admin/stories/:id', verifyToken, verifyAdmin, async (req, res) => {
+  try {
+    const id = toObjectId(req.params.id);
+    if (!id) return res.status(400).json({ error: 'Invalid story id' });
+    const story = await storiesCollection.findOne({ _id: id });
+    if (!story) return res.status(404).json({ error: 'Not found' });
+    await storiesCollection.deleteOne({ _id: id });
+    res.json({ success: true });
+  } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+});
 
-//     app.get('/api/admin/reports', verifyToken, verifyAdmin, async (_req, res) => {
-//       try {
-//         const data = await reportsCollection.find({}).sort({ createdAt: -1 }).toArray();
-//         const populated = await Promise.all(data.map(async (r) => {
-//           const storyObjectId = toObjectId(r.storyId);
-//           if (!storyObjectId) return { ...r, storyId: null };
-//           const s = await storiesCollection.findOne({ _id: storyObjectId });
-//           return { ...r, storyId: s };
-//         }));
-//         res.json({ reports: populated });
-//       } catch (e) { res.status(500).json({ error: (e as Error).message }); }
-//     });
+    app.get('/api/admin/reports', verifyToken, verifyAdmin, async (_req, res) => {
+      try {
+        const data = await reportsCollection.find({}).sort({ createdAt: -1 }).toArray();
+        const populated = await Promise.all(data.map(async (r) => {
+          const storyObjectId = toObjectId(r.storyId);
+          if (!storyObjectId) return { ...r, storyId: null };
+          const s = await storiesCollection.findOne({ _id: storyObjectId });
+          return { ...r, storyId: s };
+        }));
+        res.json({ reports: populated });
+      } catch (e) { res.status(500).json({ error: (e as Error).message }); }
+    });
 
 //     app.patch('/api/admin/reports/:id', verifyToken, verifyAdmin, async (req, res) => {
 //       try {
